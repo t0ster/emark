@@ -203,6 +203,7 @@ LOGGING = {
     }
 }
 
+FIXTURE_DIRS = (os.path.join(ROOT, "fixtures"),)
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # INTERNAL_IPS = ('127.0.0.1',)
