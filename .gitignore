@@ -4,6 +4,7 @@
 
 .installed.cfg
 bin
+!templates/bin
 develop-eggs
 dist
 *.egg-info
