@@ -1,0 +1,80 @@
+@import compass/utilities/general/min
+
+
+//-----------------------------------
+// Layout variables
+//-----------------------------------
+$left-column-width: 10em
+$right-column-width: 24em
+$center-column-min-width: 28em
+$center-column-max-width: 42em
+$c-paddings: 1em
+//-----------------------------------
+
+
+//-----------------------------------
+// Layout mixins
+//-----------------------------------
+=left-column
+  width: $left-column-width
+  position: absolute
+  top: 0
+
+=center-column
+  margin-left: $left-column-width
+  /* margin-right: $right-column-width
+  +min-width($center-column-min-width)
+  /* max-width: $center-column-max-width
+
+// Using .c for content container inside element (column)
+=c
+  .c
+    padding-left: $c-paddings
+    padding-right: $c-paddings
+//-----------------------------------
+
+
+//-----------------------------------
+// Layout
+//-----------------------------------
+body
+  +min-width($left-column-width + $center-column-min-width)
+
+#cnt
+  // Need this because we are using absolute positioning
+  // for left and right columns
+  position: relative
+
+/* #ads
+/*   +right-column
+/*   +c
+
+#nav
+  +left-column
+  +c
+
+#searchbox
+  margin-left: $left-column-width - $c-paddings / 2
+  margin-right: $right-column-width - $c-paddings / 2
+  +c
+
+#main
+  +center-column
+  +c
+
+#paginator
+  margin-left: $left-column-width - $c-paddings / 2
+  margin-right: $right-column-width - $c-paddings / 2
+  .c
+    padding-left: 50%
+    padding-right: 50%
+    +min-width(18em)
+
+#cnt
+  padding-left: 2%
+  padding-right: 2%
+
+footer
+  +center-column
+  +c
+//-----------------------------------

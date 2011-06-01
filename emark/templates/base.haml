@@ -1,0 +1,89 @@
+- load media
+- load i18n
+<!DOCTYPE html>
+-# paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/
+<!--[if lt IE 7]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if gt IE 8]><!-->
+%html.no-js{"lang": "en"}
+  <!--<![endif]-->
+  %head
+    %meta{"charset": "utf-8"}/
+    
+    -# 
+      Always force latest IE rendering engine (even in intranet) & Chrome Frame
+      Remove this if you use the .htaccess
+    %meta{"http-equiv": "X-UA-Compatible", "content": "IE=edge,chrome=1"}/
+    
+    %title Препод
+    %meta{"name": "description", "content": u"Электронная ведомость"}/
+    %meta{"name": "author", "content": "Brave Toaster Studio"}/
+    
+    -# Mobile viewport optimized: j.mp/bplateviewport
+    %meta{"content": "width=device-width, initial-scale=1.0", "name": "viewport"}/
+    
+    -# Place favicon.ico and apple-touch-icon.png in the root of your domain and delete these references
+    -# %link{"href": "/favicon.ico", "rel": "shortcut icon"}/
+    -# %link{"href": "/apple-touch-icon.png", "rel": "apple-touch-icon"}/
+    
+    -# CSS: implied media="all"
+    - include_media 'main.css'
+    -# %link{"href": "css/style.css?v=1", "media": "all", "rel": "stylesheet"}/
+
+    -# Uncomment if you are specifically targeting less enabled mobile browsers
+    -# %link{"href": "css/handheld.css?v=1", "media": "handheld", "rel": "stylesheet"}/
+    
+    -# All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects
+    - include_media 'modernizr.js'
+    -# %script{"src": "js/modernizr.min.js"}
+
+  %body{"class": "{% block body_class %}{% endblock %}"}
+    #container    
+      %header
+        - block header
+          %span.logo
+            %span.one
+              Препод
+              (
+            %span.two
+              версия
+            %span.one
+              0.1)
+
+      #cnt
+        %aside#nav
+          .c
+            - block nav
+              %ul
+                %li#today
+                  %span
+                  %a#link_today{"href": "{% url today.views.index %}"} Сегодня
+                %li#cal
+                  %span
+                  %a#link_cal{"href": "{% url cal.views.index %}"} Календарь
+                %li#settings
+                  %span
+                  %a{"href": "/admin/"} Настройки
+
+        %section#main
+          .c
+            - block main
+      #root_footer
+   
+    %footer#footer
+      .c
+        - block footer
+          %small
+            %a{"href": "http://bravetstudio.com"} Brave Toaster Studio
+            &copy; 2011      
+
+    
+    - include_media "all.js"
+
+    -# PNG fix for IE < 7
+    <!--[if lt IE 7]>
+      - include_media "dd_belatedpng.js"
+      :javascript
+        DD_belatedPNG.fix('img, .png_bg');
+    <![endif]-->

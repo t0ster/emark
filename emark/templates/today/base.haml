@@ -1,0 +1,21 @@
+- extends "base_site.haml"
+- block body_class
+  today
+- block main
+  - if object_list
+    %table{"cellspacing": "0"}
+      %tr.odd
+        %th Время
+        %th Группа
+        %th Предмет
+        %th
+      - for obj in object_list
+        %tr{"class": "{% cycle 'even' 'odd' %}"}
+          %td= obj.start_datetime|date:"TIME_FORMAT"
+          %td= obj.subject.group
+          %td= obj.subject.name
+          %td
+            %a{"href": "{{ obj.get_absolute_url }}"}
+              Отметить
+  - else
+    %h1 У вас сегодня нету пар :)

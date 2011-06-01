@@ -1,0 +1,159 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-01 17:39+0000\n"
+"PO-Revision-Date: 2011-06-01 17:40\n"
+"Last-Translator:   <root@toor.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.6.0\n"
+
+#: apps/core/models.py:11
+msgid "core"
+msgstr "расписание"
+
+#: apps/core/models.py:12
+msgid "Core"
+msgstr "Расписание"
+
+#: apps/core/models.py:25
+msgid "дата начала"
+msgstr ""
+
+#: apps/core/models.py:26
+msgid "дата конца"
+msgstr ""
+
+#: apps/core/models.py:37 apps/core/models.py:55
+msgid "семестр"
+msgstr ""
+
+#: apps/core/models.py:38
+msgid "семестры"
+msgstr ""
+
+#: apps/core/models.py:42 apps/core/models.py:53
+msgid "название"
+msgstr ""
+
+#: apps/core/models.py:48 apps/core/models.py:54
+msgid "группа"
+msgstr ""
+
+#: apps/core/models.py:49
+msgid "группы"
+msgstr ""
+
+#: apps/core/models.py:56
+msgid "дата и время первого занятия"
+msgstr ""
+
+#: apps/core/models.py:57
+msgid "раз в две недели"
+msgstr ""
+
+#: apps/core/models.py:78
+msgid ""
+"Вы не можете изменить семестр существующего предмета. Вы можете удалить"
+" существующий предмет и созать новый."
+msgstr ""
+
+#: apps/core/models.py:87
+msgid ""
+"Дата и время первого занятия должны быть между началом и концом "
+"семестра"
+msgstr ""
+
+#: apps/core/models.py:98
+msgid ""
+"Вы не можете редактировать дату начала существующего предмета. Вы "
+"можете удалить существующий предмет и созать новый."
+msgstr ""
+
+#: apps/core/models.py:108
+msgid ""
+"Вы не можете редактировать параметр раз в две недели существующего "
+"предмета. Вы можете удалить существующий предмет и созать новый."
+msgstr ""
+
+#: apps/core/models.py:134 apps/core/models.py:139
+msgid "предмет"
+msgstr ""
+
+#: apps/core/models.py:135
+msgid "предметы"
+msgstr ""
+
+#: apps/core/models.py:140
+msgid "дата и время"
+msgstr ""
+
+#: apps/core/models.py:141
+msgid "отменено"
+msgstr ""
+
+#: apps/core/models.py:152
+msgid "Неправильные дата и время"
+msgstr ""
+
+#: apps/core/models.py:163
+msgid "занятие"
+msgstr ""
+
+#: apps/core/models.py:164
+msgid "занятия"
+msgstr ""
+
+#: settings/base.py:45
+msgid "Russian"
+msgstr ""
+
+#: settings/base.py:46
+msgid "Ukrainian"
+msgstr ""
+
+#: settings/base.py:47
+msgid "English"
+msgstr ""
+
+#: templates/admin/index.html:18
+#, python-format
+msgid "Models available in the %(name)s application."
+msgstr ""
+
+#: templates/admin/index.html:29
+msgid "Add"
+msgstr ""
+
+#: templates/admin/index.html:35
+msgid "Change"
+msgstr ""
+
+#: templates/admin/index.html:45
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: templates/admin/index.html:53
+msgid "Recent Actions"
+msgstr ""
+
+#: templates/admin/index.html:54
+msgid "My Actions"
+msgstr ""
+
+#: templates/admin/index.html:58
+msgid "None available"
+msgstr ""
+
+#: templates/admin/index.html:72
+msgid "Unknown content"
+msgstr ""

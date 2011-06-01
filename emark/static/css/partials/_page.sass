@@ -1,0 +1,93 @@
+@import compass/typography/lists/bullets
+@import compass/typography/vertical_rhythm
+@import compass/typography/lists/horizontal-list
+@import compass/css3/border-radius
+@import compass/utilities/sprites/sprite-img
+@import compass/layout/sticky-footer
+
+
+//-------------------------------------------------------------------
+// Helpers
+//-------------------------------------------------------------------
+=border($position, $width: 1px)
+  border-#{$position}: solid
+  border-width: $width
+  border-color: $main-color
+//-------------------------------------------------------------------
+
+
+//-------------------------------------------------------------------
+// Standard Page Styles
+//-------------------------------------------------------------------
++establish-baseline
+
+
+header
+  +trailer(1)
+  background-color: $neutral-color
+  height: 2em
+
+.logo
+  margin-left: $base-rhythm-unit
+  .one
+    color: $main-color
+  .two
+    color: $alt-color
+
+
+footer
+  a, small
+    color: white !important
+  small
+    padding: 0.5em
+    background-color: $neutral-border-color
++sticky-footer(29px, "#container")
+
+
+#paginator
+  +trailer
+  ul
+    +horizontal-list
+    li
+      margin-bottom: 0
+    > :last-child
+      a:active, a:visited
+        color: $alt-color
+      a:hover
+        color: white
+        background-color: $main-color
+
+
+#nav
+  ul, ol
+    +no-bullets
+    margin-left: 0
+  li
+    span
+      $sprite-default-size: 16px
+      $sprite-image-default-width: $sprite-default-size
+      $sprite-image-default-height: $sprite-default-size
+      display: block
+      +float-left
+      +leader(0.12)
+      margin-left: -5px
+    +adjust-font-size-to($bigger-font-size)
+    +trailer(0, $bigger-font-size)
+
+  #today span
+    +sprite-img("images/ui-icons_0073ea_256x240.png", 11, 9)
+  #cal span
+    +sprite-img("images/ui-icons_0073ea_256x240.png", 3, 8)
+  #settings span
+    +sprite-img("images/ui-icons_0073ea_256x240.png", 12, 8)
+  h1
+    +adjust-font-size-to($bigger-font-size)
+    +trailer(1, $bigger-font-size)
+    color: $font-color
+  h2
+    color: $font-color
+  +border(right, 0.1em)
+
+
+body.today #link_today, body.cal #link_cal
+  @extend .hover

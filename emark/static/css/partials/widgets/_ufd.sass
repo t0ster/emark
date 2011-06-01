@@ -1,0 +1,59 @@
+/* ufd 0.5: http://code.google.com/p/ufd/
+/* This is the default skin, a plain but attractive dropdown.
+
+$ufd-border-color: #757888
+$ufd-list-border-color: #757888
+$ufd-mouseover-color: #B5B8C8
+
+span.ufd
+  &.plain-focus
+    background-color: $ufd-border-color
+    border: 1px solid $ufd-border-color
+  &.plain
+    height: 18px
+    // http://blog.toolman.geek.nz/2009/12/annoying-ie6-bug-of-day.html
+    background-color: $ufd-mouseover-color
+    border: 1px solid $ufd-mouseover-color
+    input
+      line-height: 16px !important
+      height: 16px
+      padding: 1px 3px
+      border: 0px
+      &.disabled
+        color: #ccc
+        background-color: gray !important
+      &.focus
+    button
+      width: 18px
+      height: 18px
+      // for divider
+      margin-left: 1px
+      background: url("images/icon.gif") no-repeat 0px 0px
+      &.focus
+      &.hover
+        background-position: -18px 0px
+      &.mouseDown
+        background-position: -36px 0px
+      &.disabled
+        background-position: -54px 0px !important
+
+
+/* Dropdown */
+#ufd-container
+  .plain
+    .list-scroll
+      border: 1px solid $ufd-list-border-color
+      border-top-width: 0px
+      background-color: #FFF
+    .list-wrapper-up div.list-scroll
+      border-top-width: 1px
+      border-bottom-width: 0px
+    li
+      padding-left: 5px
+      em
+        font-weight: bold
+        font-style: normal
+      &.active
+        background-color: highlight
+        color: highlighttext
+

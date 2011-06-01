@@ -1,0 +1,15 @@
+*.pyc
+*.pyo
+*.db
+
+.installed.cfg
+bin
+develop-eggs
+dist
+*.egg-info
+parts
+build
+downloads
+eggs
+var
+settings_local.py

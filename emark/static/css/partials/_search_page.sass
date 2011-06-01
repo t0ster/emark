@@ -1,0 +1,148 @@
+//-------------------------------------------------------------------
+// Search Page Styles
+//-------------------------------------------------------------------
+@import compass/utilities/sprites/sprite-img
+@import compass/utilities/general/float
+
+
+#searchp ul, ol
+  +no-bullets
+  margin-left: 0
+
+#filters
+  h1
+    +adjust-font-size-to($bigger-font-size)
+    +trailer(1, $bigger-font-size)
+    color: $font-color
+    /* &:first-letter
+    /*   color: $alt-color
+  h2
+    color: $font-color
+  /* a, a:active, a:visited, a:hover
+  /*   background-color: inherit
+  /*   color: $font-color
+  /*   text-decoration: none
+  /*   border-bottom: 1px dotted    
+  +border(right, 0.1em)
+  #enabled
+    +trailing-border
+    +trailer
+    border-color: $main-color
+
+#main, #ads
+  +border(left, 0.1em)
+  +trailer
+  ul
+    margin-left: 0
+    > :last-child
+      margin: 0
+  li
+    +trailer
+  h1
+    +adjust-font-size-to($bigger-font-size)
+    margin-bottom: 0
+
+#ads
+  +border(left, 0.1em)
+
+#filters
+  h2
+    margin: 0
+  /* ul
+  /*   margin: 0
+
+$sprite-default-size: 16px
+$sprite-image-default-width: $sprite-default-size
+$sprite-image-default-height: $sprite-default-size
+/* $sprite-default-margin: 0px
+
+.dellistwgt
+  +no-bullets
+  ul
+    margin: 0
+  li
+    span
+      display: block
+      +float-left
+      +sprite-img("images/ui-icons_0073ea_256x240.png", 6, 14)
+      /* +leader(0.05)
+      margin-left: -5px
+    +trailer(0)
+
+.addlistwgt
+  +no-bullets
+  ul
+    margin: 0
+  li
+    span
+      display: block
+      +float-left
+      +sprite-img("images/ui-icons_0073ea_256x240.png", 1, 14)
+      /* +leader(0.1)
+      margin-left: -5px
+    +trailer(0)
+
+.fromtowgt
+  input[type=text]
+    width: 5.5em
+  li
+    +trailer(0.5)
+  ul
+    > :last-child
+      margin: 0
+
+/* li
+/*   +trailer
+  /* margin-bottom: 1em
+
+body
+  /* +debug-vertical-alignment("images/underline.png")
+
+#searchbox
+  +trailer
+  small
+    padding-left: $c-paddings / 2
+  input
+    margin-bottom: 0
+    &[type=text], &[type=submit], &[type=button]
+      +textinput($bigger-font-size, 0.5)
+    &[type=text]
+      width: 100%
+      border-right: none
+      /* border-color: $main-color
+      +border-radius(0)
+      +border-left-radius(2px)
+    &[type=submit], &[type=button]
+      /* border-color: $main-color
+      /* background-color: $main-color
+      /* color: white
+      width: 80px
+      +border-radius(0)
+      +border-right-radius(2px)
+      /* &:active
+      /*   color: $main-color
+      /*   background-color: white
+  table
+    border: none
+    padding: 0
+    margin: 0
+    td
+      padding: 0
+
+
+.listswgt
+  select
+    width: 100%
+  ul
+    margin: 0
+    > :last-child
+      margin: 0  
+  li
+    +trailer(0.5)
+
+small
+  a, a:active, a:visited, a:hover
+    background-color: inherit
+    color: $font-color
+    text-decoration: none
+    border-bottom: 1px dotted
