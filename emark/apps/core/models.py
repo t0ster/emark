@@ -25,11 +25,29 @@ class Semester(models.Model):
     start_date = models.DateField(verbose_name=_(u"дата начала"))
     end_date = models.DateField(verbose_name=_(u"дата конца"))
 
+    def validate_date_edit(self):
+        if self.pk:
+            old_obj = Semester.objects.get(pk=self.pk)
+            new_obj = self
+            if (old_obj.start_date != new_obj.start_date or
+                old_obj.end_date != new_obj.end_date):
+                raise ValidationError(_(
+                        u"Вы не можете редактировать даты существующего "
+                        u"семестра. Вы можете удалить существующий семестр и "
+                        u"созать новый."))
+
     def __unicode__(self):
-        return "%s - %s" % (
+        return u"%s - %s" % (
             dateformat(self.start_date, settings.DATE_FORMAT),
             dateformat(self.end_date, settings.DATE_FORMAT)
         )
+
+    def clean(self):
+        self.validate_date_edit()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(Semester, self).save(*args, **kwargs)
 
     objects = SemesterManager()
 
@@ -57,7 +75,7 @@ class Subject(models.Model):
     per2weeks = models.BooleanField(default=False, verbose_name=_(u"раз в две недели"))
 
     def __unicode__(self):
-        return "%s | %s" % (
+        return u"%s | %s" % (
             self.name,
             dateformat(self.semester.start_date, "Y")
         )
@@ -81,11 +99,12 @@ class Subject(models.Model):
 
     def validate_start_datetime_range(self):
         start_datetime = datetime.combine(self.semester.start_date, time())
-        end_datetime = datetime.combine(self.semester.end_date, time(23, 59))
+        end_datetime = datetime.combine(self.semester.start_date, time(23, 59))
+        end_datetime += timedelta(3 * 7)
         if not (start_datetime < self.start_datetime < end_datetime):
             raise ValidationError(_(
-                u"Дата и время первого занятия должны быть между "
-                u"началом и концом семестра"))
+                u"Дата первого занятия должна быть не позже трех "
+                u"недель от начала семестра."))
 
     def validate_start_datetime_edit(self):
         if self.pk:
@@ -141,7 +160,7 @@ class Lesson(models.Model):
     canceled = models.BooleanField(default=False, verbose_name=_(u"отменено"))
 
     def __unicode__(self):
-        return "%s | %s | %s" % (
+        return u"%s | %s | %s" % (
             self.subject.name,
             self.subject.group.name,
             dateformat(self.start_datetime, settings.DATETIME_FORMAT)
