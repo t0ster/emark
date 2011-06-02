@@ -79,7 +79,7 @@ class Subject(models.Model):
                         u"предмета. Вы можете удалить существующий предмет и "
                         u"созать новый."))
 
-    def validate_start_datetime_semester(self):
+    def validate_start_datetime_range(self):
         start_datetime = datetime.combine(self.semester.start_date, time())
         end_datetime = datetime.combine(self.semester.end_date, time(23, 59))
         if not (start_datetime < self.start_datetime < end_datetime):
@@ -87,7 +87,7 @@ class Subject(models.Model):
                 u"Дата и время первого занятия должны быть между "
                 u"началом и концом семестра"))
 
-    def validate_start_datetime_date(self):
+    def validate_start_datetime_edit(self):
         if self.pk:
             old_obj = Subject.objects.get(pk=self.pk)
             new_obj = self
@@ -105,7 +105,7 @@ class Subject(models.Model):
             new_obj = self
             if old_obj.per2weeks != new_obj.per2weeks:
                 raise ValidationError(_(
-                        u"Вы не можете редактировать параметр раз в две недели "
+                        u'Вы не можете редактировать параметр "раз в две недели" '
                         u"существующего предмета. Вы можете удалить "
                         u"существующий предмет и созать новый."))
 
@@ -121,8 +121,8 @@ class Subject(models.Model):
 
     def clean(self):
         self.validate_semester()
-        self.validate_start_datetime_semester()
-        self.validate_start_datetime_date()
+        self.validate_start_datetime_range()
+        self.validate_start_datetime_edit()
         self.validate_per2weeks()
 
     def save(self, *args, **kwargs):

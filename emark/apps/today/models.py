@@ -1,9 +1,6 @@
 from datetime import datetime, time
 
 from django.db import models
-from django.core.urlresolvers import reverse
-from django.utils import dateformat
-from django.conf import settings
 
 from core.models import Lesson
 
