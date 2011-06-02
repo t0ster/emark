@@ -40,3 +40,11 @@ class LessonTests(BaseTestCase):
     def test_lessons(self):
         self.assertEqual(
             models.Lesson.objects.count(), 3)
+
+    def test_filter_by_weekday(self):
+        tuesday_subjects = models.Lesson.objects.filter_by_weekday(
+            weekday=1, week=1, semester=self.semester)
+        self.assertEqual(tuesday_subjects.count(), 1)
+
+    def test_iter_by_weekdays(self):
+        self.assertTrue(models.Lesson.objects.iter_by_weekdays())

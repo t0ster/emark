@@ -6,81 +6,26 @@
     Календарь
   %table{"cellspacing": "0"}
     %tr
-      %th{"colspan": "3"} Неделя 1
-      %th{"colspan": "3"} Неделя 2
+      %th
+      %th
+      %th{"colspan": "2"} Неделя 1
+      %th{"colspan": "2"} Неделя 2
     %tr
+      %th День
       %th Время
       %th Группа
       %th Предмет
-      %th Время
       %th Группа
       %th Предмет
-    %tr
-      %th{"colspan": "6"} Понедельник
-    %tr.even
-      %td 10:25
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 10:25
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr.odd
-      %td 12:20
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 12:20
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr.even
-      %td 14:15
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 14:15
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr
-      %th{"colspan": "6"} Вторник
-    %tr.even
-      %td 10:25
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 10:25
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr.odd
-      %td 12:20
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 12:20
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr.even
-      %td 14:15
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 14:15
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr
-      %th{"colspan": "6"} Среда
-    %tr.even
-      %td 10:25
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 10:25
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr.odd
-      %td 12:20
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 12:20
-      %td ИА-62
-      %td ТАУ (лекц.)
-    %tr.even
-      %td 14:15
-      %td ИА-62
-      %td ТАУ (лекц.)
-      %td 14:15
-      %td ИА-62
-      %td ТАУ (лекц.)
+    - for week_day in timetable
+      - for lesson_week1, lesson_week2 in week_day
+        %tr{"class": "{% cycle 'even' 'odd' %}"}
+          - if forloop.first
+            %th{"rowspan": '{{ week_day|length }}'}
+              %span.weekday Пон
+
+          %td= lesson_week1.subject.start_datetime|date:"TIME_FORMAT"
+          %td= lesson_week1.subject.group
+          %td= lesson_week1.subject.name
+          %td= lesson_week2.subject.group
+          %td= lesson_week2.subject.name

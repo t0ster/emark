@@ -1,13 +1,17 @@
 - extends "base_site.haml"
+- load i18n
 - block body_class
   today
 - block main
   - if object_list
     %table{"cellspacing": "0"}
       %tr.odd
-        %th Время
-        %th Группа
-        %th Предмет
+        %th
+          - trans "Время"
+        %th
+          - trans "Группа"
+        %th
+          - trans "Предмет"
         %th
       - for obj in object_list
         %tr{"class": "{% cycle 'even' 'odd' %}"}
@@ -16,6 +20,7 @@
           %td= obj.subject.name
           %td
             %a{"href": "{{ obj.get_absolute_url }}"}
-              Отметить
+              - trans "Отметить"
   - else
-    %h1 У вас сегодня нету пар :)
+    %h1
+      - trans "У вас сегодня нету пар :)"

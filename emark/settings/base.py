@@ -55,7 +55,7 @@ USE_I18N = True
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
-USE_L10N = False
+USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -212,6 +212,5 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 #     'debug_toolbar.middleware.DebugToolbarMiddleware',
 # )
 
-DATE_FORMAT = 'd.m.Y'
-TIME_FORMAT = 'H:i'
-DATETIME_FORMAT = 'd.m.Y H:i'
+FORMAT_MODULE_PATH = 'emark.formats'
+FIRST_DAY_OF_WEEK = 1  # Monday

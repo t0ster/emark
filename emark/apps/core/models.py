@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from calendar import monthcalendar
 from datetime import timedelta, datetime, date, time
 
 from django.db import models
@@ -66,6 +67,9 @@ class Group(models.Model):
         verbose_name = _(u"группа")
         verbose_name_plural = _(u"группы")
 
+
+class SubjectManager(models.Manager):
+    pass
 
 class Subject(models.Model):
     name = models.CharField(max_length=255, verbose_name=_(u"название"))
@@ -149,9 +153,39 @@ class Subject(models.Model):
         super(Subject, self).save(*args, **kwargs)
         self._generate_lessons()
 
+    objects = SubjectManager()
+
     class Meta:
+        ordering = ["start_datetime"]
         verbose_name = _(u"предмет")
         verbose_name_plural = _(u"предметы")
+
+
+class LessonManager(models.Manager):
+    def filter_by_weekday(self, weekday, week=1, semester=None):
+        if semester is None:
+            semester = Semester.objects.get_current_semester()
+        if weekday not in range(7):
+            raise ValueError(u"week have to be in range 0..6")
+        if week not in (1, 2):
+            raise ValueError(u"week have to be 1 or 2")
+        week1, week2, week3 = monthcalendar(
+            semester.start_date.year, semester.start_date.month)[:3]
+        _week1 = [w1 or w3 for w1, w3 in zip(week1, week3)]
+        _week2 = [w1 or w2 for w1, w2 in zip(week1, week2)]
+        week = (_week1, _week2)[week - 1]
+        day_of_month = week[weekday]
+        start_datetime = datetime(
+            semester.start_date.year, semester.start_date.month, day_of_month)
+        end_datetime = datetime.combine(start_datetime, time(23, 59))
+        return self.filter(
+            start_datetime__gte=start_datetime,
+            start_datetime__lte=end_datetime)
+
+    def iter_by_weekdays(self, week=1, semester=None, limit=7):
+        for weekday in range(limit):
+            yield self.filter_by_weekday(
+                weekday=weekday, week=week, semester=semester)
 
 
 class Lesson(models.Model):
@@ -176,6 +210,8 @@ class Lesson(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super(Lesson, self).save(*args, **kwargs)
+
+    objects = LessonManager()
 
     class Meta:
         ordering = ["start_datetime"]

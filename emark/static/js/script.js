@@ -9,3 +9,5 @@ $("table").delegate('td','mouseover mouseleave click', function(e) {
     $(this).parent().children().removeClass("table_hover");
   }
 });
+
+// $('table .weekday').html($('table .weekday').text().replace(/(.)/g,"<p>$1</p>"));
