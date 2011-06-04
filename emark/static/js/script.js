@@ -1,4 +1,4 @@
-$("table").delegate('td','mouseover mouseleave click', function(e) {
+$("body.today table").delegate('td','mouseover mouseleave click', function(e) {
   if (e.type == 'mouseover') {
     $(this).parent().children().addClass("table_hover");
   }

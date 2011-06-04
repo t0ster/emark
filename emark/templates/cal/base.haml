@@ -1,31 +1,42 @@
 - extends "base_site.haml"
+- load i18n
+- block title
+  - trans "Календарь"
 - block body_class
   cal
 - block main
   %h1
-    Календарь
+    - trans "Календарь"
   %table{"cellspacing": "0"}
     %tr
       %th
       %th
-      %th{"colspan": "2"} Неделя 1
-      %th{"colspan": "2"} Неделя 2
+      %th{"colspan": "2"}
+        - trans "Неделя 1"
+      %th{"colspan": "2"}
+        - trans "Неделя 2"
     %tr
-      %th День
-      %th Время
-      %th Группа
-      %th Предмет
-      %th Группа
-      %th Предмет
-    - for week_day in timetable
-      - for lesson_week1, lesson_week2 in week_day
+      %th
+        - trans "День"
+      %th
+        - trans "Время"
+      %th
+        - trans "Группа"
+      %th
+        - trans "Предмет"
+      %th
+        - trans "Группа"
+      %th
+        - trans "Предмет"
+    - for week_day, week_day_lessons in week
+      - for subject_week1, subject_week2 in week_day_lessons
         %tr{"class": "{% cycle 'even' 'odd' %}"}
           - if forloop.first
-            %th{"rowspan": '{{ week_day|length }}'}
-              %span.weekday Пон
+            %th{"rowspan": '{{ week_day_lessons|length }}'}
+              %span.weekday= week_day
 
-          %td= lesson_week1.subject.start_datetime|date:"TIME_FORMAT"
-          %td= lesson_week1.subject.group
-          %td= lesson_week1.subject.name
-          %td= lesson_week2.subject.group
-          %td= lesson_week2.subject.name
+          %td= subject_week1.start_datetime|date:"TIME_FORMAT"
+          %td= subject_week1.group
+          %td= subject_week1.name
+          %td= subject_week2.group
+          %td= subject_week2.name

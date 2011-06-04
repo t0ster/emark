@@ -13,4 +13,5 @@ build
 downloads
 eggs
 var
+_generated_media*
 settings_local.py

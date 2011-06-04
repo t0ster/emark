@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from itertools import izip_longest
 from calendar import monthcalendar
 from datetime import timedelta, datetime, date, time
 
@@ -25,6 +26,7 @@ class SemesterManager(models.Manager):
 class Semester(models.Model):
     start_date = models.DateField(verbose_name=_(u"дата начала"))
     end_date = models.DateField(verbose_name=_(u"дата конца"))
+    # starts_from_1st_week = models.BooleanField(u"начинается с первой недели")
 
     def validate_date_edit(self):
         if self.pk:
@@ -69,7 +71,33 @@ class Group(models.Model):
 
 
 class SubjectManager(models.Manager):
-    pass
+    def filter_by_weekday(self, weekday, week=1, semester=None):
+        if semester is None:
+            semester = Semester.objects.get_current_semester()
+        if weekday not in range(7):
+            raise ValueError(u"weekday have to be in range 0..6")
+        if week not in (1, 2):
+            raise ValueError(u"week have to be 1 or 2")
+        week1, week2, week3 = monthcalendar(
+            semester.start_date.year, semester.start_date.month)[:3]
+        _week1 = [w1 or w3 for w1, w3 in zip(week1, week3)]
+        _week2 = [w1 or w2 for w1, w2 in zip(week1, week2)]
+        week = (_week1, _week2)[week - 1]
+        day_of_month = week[weekday]
+        start_datetime = datetime(
+            semester.start_date.year, semester.start_date.month, day_of_month)
+        end_datetime = datetime.combine(start_datetime, time(23, 59))
+        subjects = Lesson.objects.filter(
+            start_datetime__gte=start_datetime,
+            start_datetime__lte=end_datetime
+            ).values_list('subject__pk', flat=True)
+        return self.filter(pk__in=subjects)
+
+    def iter_by_weekdays(self, week=1, semester=None, limit=7):
+        for weekday in range(limit):
+            yield self.filter_by_weekday(
+                weekday=weekday, week=week, semester=semester)
+
 
 class Subject(models.Model):
     name = models.CharField(max_length=255, verbose_name=_(u"название"))
@@ -79,8 +107,9 @@ class Subject(models.Model):
     per2weeks = models.BooleanField(default=False, verbose_name=_(u"раз в две недели"))
 
     def __unicode__(self):
-        return u"%s | %s" % (
+        return u"%s | %s | %s" % (
             self.name,
+            dateformat(self.start_datetime, "l H:i"),
             dateformat(self.semester.start_date, "Y")
         )
 
@@ -91,6 +120,9 @@ class Subject(models.Model):
             yield class_datetime
             class_datetime += timedelta(7 + (0, 7)[self.per2weeks])
 
+    #==========================================================================
+    # Validation
+    #==========================================================================
     def validate_semester(self):
         if self.pk:
             old_obj = Subject.objects.get(pk=self.pk)
@@ -132,21 +164,20 @@ class Subject(models.Model):
                         u"существующего предмета. Вы можете удалить "
                         u"существующий предмет и созать новый."))
 
-    def _generate_lessons(self):
-        lessons = Lesson.objects.filter(subject=self)
-        if not lessons:
-            lessons = [None] * len(list(self.get_lessons_datetimes()))
-        for start_datetime, lesson in zip(self.get_lessons_datetimes(), lessons):
-            if not lesson:
-                lesson = Lesson(subject=self)
-            lesson.start_datetime = start_datetime
-            lesson.save()
-
     def clean(self):
         self.validate_semester()
         self.validate_start_datetime_range()
         self.validate_start_datetime_edit()
         self.validate_per2weeks()
+    #--------------------------------------------------------------------------
+
+    def _generate_lessons(self):
+        lessons = Lesson.objects.filter(subject=self)
+        for start_datetime, lesson in izip_longest(self.get_lessons_datetimes(), lessons):
+            if not lesson:
+                lesson = Lesson(subject=self)
+            lesson.start_datetime = start_datetime
+            lesson.save()
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -162,30 +193,7 @@ class Subject(models.Model):
 
 
 class LessonManager(models.Manager):
-    def filter_by_weekday(self, weekday, week=1, semester=None):
-        if semester is None:
-            semester = Semester.objects.get_current_semester()
-        if weekday not in range(7):
-            raise ValueError(u"week have to be in range 0..6")
-        if week not in (1, 2):
-            raise ValueError(u"week have to be 1 or 2")
-        week1, week2, week3 = monthcalendar(
-            semester.start_date.year, semester.start_date.month)[:3]
-        _week1 = [w1 or w3 for w1, w3 in zip(week1, week3)]
-        _week2 = [w1 or w2 for w1, w2 in zip(week1, week2)]
-        week = (_week1, _week2)[week - 1]
-        day_of_month = week[weekday]
-        start_datetime = datetime(
-            semester.start_date.year, semester.start_date.month, day_of_month)
-        end_datetime = datetime.combine(start_datetime, time(23, 59))
-        return self.filter(
-            start_datetime__gte=start_datetime,
-            start_datetime__lte=end_datetime)
-
-    def iter_by_weekdays(self, week=1, semester=None, limit=7):
-        for weekday in range(limit):
-            yield self.filter_by_weekday(
-                weekday=weekday, week=week, semester=semester)
+    pass
 
 
 class Lesson(models.Model):
