@@ -79,7 +79,7 @@ class Migration(SchemaMigration):
             'start_date': ('django.db.models.fields.DateField', [], {})
         },
         'core.subject': {
-            'Meta': {'object_name': 'Subject'},
+            'Meta': {'ordering': "['start_datetime']", 'object_name': 'Subject'},
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Group']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),

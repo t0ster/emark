@@ -26,7 +26,7 @@ class SemesterManager(models.Manager):
 class Semester(models.Model):
     start_date = models.DateField(verbose_name=_(u"дата начала"))
     end_date = models.DateField(verbose_name=_(u"дата конца"))
-    # starts_from_1st_week = models.BooleanField(u"начинается с первой недели")
+    starts_from_1st_week = models.BooleanField(u"начинается с первой недели", default=True)
 
     def validate_date_edit(self):
         if self.pk:
@@ -78,15 +78,22 @@ class SubjectManager(models.Manager):
             raise ValueError(u"weekday have to be in range 0..6")
         if week not in (1, 2):
             raise ValueError(u"week have to be 1 or 2")
+
         week1, week2, week3 = monthcalendar(
             semester.start_date.year, semester.start_date.month)[:3]
-        _week1 = [w1 or w3 for w1, w3 in zip(week1, week3)]
-        _week2 = [w1 or w2 for w1, w2 in zip(week1, week2)]
+        if semester.starts_from_1st_week:
+            _week1 = [w1 or w3 for w1, w3 in zip(week1, week3)]
+            _week2 = week2
+        else:
+            _week1 = week2
+            _week2 = [w1 or w3 for w1, w3 in zip(week1, week3)]
         week = (_week1, _week2)[week - 1]
         day_of_month = week[weekday]
+
         start_datetime = datetime(
             semester.start_date.year, semester.start_date.month, day_of_month)
         end_datetime = datetime.combine(start_datetime, time(23, 59))
+        # TODO: May be do not use DB here
         subjects = Lesson.objects.filter(
             start_datetime__gte=start_datetime,
             start_datetime__lte=end_datetime
