@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 
 class Tests(TestCase):
@@ -8,5 +9,5 @@ class Tests(TestCase):
         self.client.login(username='test', password='secret')
 
     def test_admin(self):
-        response = self.client.get('/admin/')
+        response = self.client.get(reverse("admin:index"))
         self.assertEqual(response.status_code, 200)

@@ -34,7 +34,7 @@ class BaseTestCase(TestCase):
             name="Subject Tue 12:20 per 2 weeks",
             group=self.group,
             semester=self.semester,
-            start_datetime=datetime(2011, 2, 1, 10, 25),
+            start_datetime=datetime(2011, 2, 1, 12, 20),
             per2weeks=True,
         )
 
@@ -52,7 +52,7 @@ class SubjectTests(BaseTestCase):
         self.subject1.start_datetime = datetime(2011, 2, 22, 10, 25)
         self.assertRaises(
             ValidationError,
-            lambda: self.subject1.save()
+            lambda: self.subject1.full_clean()
         )
 
     def test_iter_by_weekdays(self):
@@ -76,6 +76,7 @@ class FilterByWeekDayTests(BaseTestCase):
 
     def test_semester_starts_1stweek(self):
         self.semester.starts_from_1st_week = False
+        self.semester.full_clean()
         self.semester.save()
 
         tue_subjects = models.Subject.objects.filter_by_weekday(

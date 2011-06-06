@@ -4,17 +4,21 @@ from calendar import monthcalendar
 from datetime import timedelta, datetime, date, time
 
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.utils.dateformat import format as dateformat
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+
+from emark.db.utils import ValidationManager
+from core import conf
 
 
 _(u"core")
 _(u"Core")
 
 
-class SemesterManager(models.Manager):
+class SemesterManager(ValidationManager):
     def get_current_semester(self):
         today = date.today()
         try:
@@ -24,9 +28,14 @@ class SemesterManager(models.Manager):
 
 
 class Semester(models.Model):
-    start_date = models.DateField(verbose_name=_(u"дата начала"))
-    end_date = models.DateField(verbose_name=_(u"дата конца"))
+    start_date = models.DateField(verbose_name=_(u"дата начала"), unique=True)
+    end_date = models.DateField(verbose_name=_(u"дата конца"), unique=True)
     starts_from_1st_week = models.BooleanField(u"начинается с первой недели", default=True)
+
+    def validate_date_end_gte_start(self):
+        if self.start_date >= self.end_date:
+            raise ValidationError(_(
+                    u"Дата начала должна быть меньше."))
 
     def validate_date_edit(self):
         if self.pk:
@@ -39,6 +48,15 @@ class Semester(models.Model):
                         u"семестра. Вы можете удалить существующий семестр и "
                         u"созать новый."))
 
+    def validate_date_unique(self):
+        if not self.pk:
+            _q1 = Q(start_date__gte=self.start_date, start_date__lte=self.end_date)
+            _q2 = Q(end_date__gte=self.start_date, end_date__lte=self.end_date)
+            _q3 = Q(start_date__lte=self.start_date, end_date__gte=self.end_date)
+            if Semester.objects.filter(_q1 | _q2 | _q3):
+                raise ValidationError(_(
+                        u"Семестр пересекается с уже существующим."))
+
     def __unicode__(self):
         return u"%s - %s" % (
             dateformat(self.start_date, settings.DATE_FORMAT),
@@ -46,11 +64,9 @@ class Semester(models.Model):
         )
 
     def clean(self):
+        self.validate_date_end_gte_start()
         self.validate_date_edit()
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super(Semester, self).save(*args, **kwargs)
+        self.validate_date_unique()
 
     objects = SemesterManager()
 
@@ -70,7 +86,7 @@ class Group(models.Model):
         verbose_name_plural = _(u"группы")
 
 
-class SubjectManager(models.Manager):
+class SubjectManager(ValidationManager):
     def filter_by_weekday(self, weekday, week=1, semester=None):
         if semester is None:
             semester = Semester.objects.get_current_semester()
@@ -93,7 +109,7 @@ class SubjectManager(models.Manager):
         start_datetime = datetime(
             semester.start_date.year, semester.start_date.month, day_of_month)
         end_datetime = datetime.combine(start_datetime, time(23, 59))
-        # TODO: May be do not use DB here
+        # TODO: May be do not query DB here
         subjects = Lesson.objects.filter(
             start_datetime__gte=start_datetime,
             start_datetime__lte=end_datetime
@@ -110,12 +126,13 @@ class Subject(models.Model):
     name = models.CharField(max_length=255, verbose_name=_(u"название"))
     group = models.ForeignKey(Group, verbose_name=_(u"группа"))
     semester = models.ForeignKey(Semester, verbose_name=_(u"семестр"), default=Semester.objects.get_current_semester)
-    start_datetime = models.DateTimeField(verbose_name=_(u"дата и время первого занятия"))
+    start_datetime = models.DateTimeField(verbose_name=_(u"дата и время первого занятия"), unique=True)
     per2weeks = models.BooleanField(default=False, verbose_name=_(u"раз в две недели"))
 
     def __unicode__(self):
-        return u"%s | %s | %s" % (
+        return u"%s | %s | %s | %s" % (
             self.name,
+            self.group,
             dateformat(self.start_datetime, "l H:i"),
             dateformat(self.semester.start_date, "Y")
         )
@@ -171,11 +188,22 @@ class Subject(models.Model):
                         u"существующего предмета. Вы можете удалить "
                         u"существующий предмет и созать новый."))
 
+    def validate_datetime_unique(self):
+        start_datetime = self.start_datetime
+        end_datetime = self.start_datetime + timedelta(minutes=conf.LESSON_LENGTH)
+        _q1 = Q(start_datetime__gte=start_datetime, start_datetime__lte=end_datetime)
+        _q2 = Q(start_datetime__gte=start_datetime - timedelta(minutes=conf.LESSON_LENGTH),
+                start_datetime__lte=start_datetime)
+        if Lesson.objects.filter((_q1 | _q2) & ~Q(subject__pk=self.pk)):
+            raise ValidationError(_(
+                    u"Предмет пересекается по времени с уже существующим."))
+
     def clean(self):
         self.validate_semester()
         self.validate_start_datetime_range()
         self.validate_start_datetime_edit()
         self.validate_per2weeks()
+        self.validate_datetime_unique()
     #--------------------------------------------------------------------------
 
     def _generate_lessons(self):
@@ -187,7 +215,6 @@ class Subject(models.Model):
             lesson.save()
 
     def save(self, *args, **kwargs):
-        self.full_clean()
         super(Subject, self).save(*args, **kwargs)
         self._generate_lessons()
 
@@ -199,7 +226,7 @@ class Subject(models.Model):
         verbose_name_plural = _(u"предметы")
 
 
-class LessonManager(models.Manager):
+class LessonManager(ValidationManager):
     pass
 
 
@@ -221,10 +248,6 @@ class Lesson(models.Model):
 
     def clean(self):
         self.validate_start_datetime()
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super(Lesson, self).save(*args, **kwargs)
 
     objects = LessonManager()
 
