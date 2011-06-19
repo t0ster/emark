@@ -21,10 +21,7 @@ _(u"Core")
 class SemesterManager(ValidationManager):
     def get_current_semester(self):
         today = date.today()
-        try:
-            return self.get(start_date__lte=today, end_date__gte=today)
-        except Semester.DoesNotExist:
-            return None
+        return self.get(start_date__lte=today, end_date__gte=today)
 
 
 class Semester(models.Model):
