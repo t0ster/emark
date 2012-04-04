@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Utilities that help to generate teacher's calendar
+"""
 from itertools import izip_longest
 from collections import namedtuple
 
@@ -23,6 +26,20 @@ DummySubject = namedtuple("Subject", "start_datetime")
 
 
 class Calendar(object):
+    """
+    E.g.:
+
+    >>> Calendar().iter_by_weekdays()
+    [(u'Пон', []),
+     (u'Вт', []),
+     (u'Ср', []),
+     (u'Чет', [
+        (<Subject: ТАУ | IA-62 | Четверг 12:00 | 2012>,
+         <Subject: ТАУ | IA-62 | Четверг 12:00 | 2012>)]),
+     (u'Пят', []),
+     (u'Суб', []),
+     (u'Вос', [])]
+    """
     def __init__(self, semester=None):
         self.semester = semester
 
@@ -37,6 +54,15 @@ class Calendar(object):
 
 
 class AppendedWeeks(object):
+    """
+    E. g.:
+
+    >>> subjects_on_week1 = Subject.objects.iter_by_weekdays(week=1, semester=self.semester),
+    >>> subjects_on_week2 = Subject.objects.iter_by_weekdays(week=2, semester=self.semester),
+    >>> week1, week2 = AppendedWeeks(week1, week2).get()
+    >>> week1
+    [[], [], [], [<Subject: ТАУ | IA-62 | Четверг 12:00 | 2012>], [], [], []]
+    """
     def __init__(self, week1, week2):
         self.week1 = list(week1)
         self.week2 = list(week2)
